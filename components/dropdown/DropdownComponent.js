@@ -92,11 +92,18 @@ class DropdownComponent {
       this.button.textContent = eventTarget;
       this.content.style.display = "none";
       this.inputElement.value = eventTarget;
-      // debugger;
-      // this.inputElement.setAttribute(
-      //   "data-value",
-      //   event.target.dataset.district ? event.target.dataset.district : ""
-      // );
+      if (event.target.dataset.district) {
+        this.inputElement.setAttribute(
+          "data-district",
+          event.target.dataset.district
+        );
+      }
+      if (event.target.dataset.province) {
+        this.inputElement.setAttribute(
+          "data-province",
+          event.target.dataset.province
+        );
+      }
       const districtOnChange = new CustomEvent("districtOnChange", {
         detail: {
           selectedDistrict: event.target.dataset?.district,
@@ -128,6 +135,7 @@ class DropdownComponent {
 
   resetSelected() {
     this.inputElement.value = "";
+    this.inputElement.setAttribute("data-district", "");
     this.button.textContent = "Quận huyện";
   }
 }

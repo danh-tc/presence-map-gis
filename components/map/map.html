@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ArcGIS Map with Side Panel</title>
+    <title>Hệ thống trạm sạc Vinfast tại Việt Name</title>
     <link
       rel="stylesheet"
       href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
@@ -20,8 +20,12 @@
           </div>
           <div class="cmp-map__info">
             <ol>
-              <li>Có bao nhiêu trạm trên toàn quốc</li>
-              <li>Nếu có filter tỉnh: bao nhiêu trạm tại tỉnh</li>
+              <li class="cmp-map__info__national-number">
+                Có bao nhiêu trạm trên toàn quốc
+              </li>
+              <li class="cmp-map__info__districting-number">
+                Nếu có filter tỉnh: bao nhiêu trạm tại tỉnh
+              </li>
               <li>
                 Nếu có filter tỉnh + huyện: bao nhiêu trạm tại tỉnh + huyện
               </li>
@@ -29,7 +33,13 @@
           </div>
           <div class="cmp-map__filter">
             <div id="province-dropdown" class="dropdown">
-              <input type="text" value="aihihdongok" class="selected-value" />
+              <input
+                type="text"
+                value=""
+                data-province=""
+                class="selected-value"
+                style="display: none"
+              />
               <button class="dropdown-button">Tỉnh thành</button>
               <div class="dropdown-content">
                 <input
@@ -44,7 +54,13 @@
             </div>
 
             <div id="district-dropdown" class="dropdown">
-              <input type="text" value="aihihdongok" class="selected-value" />
+              <input
+                type="text"
+                value=""
+                data-district=""
+                class="selected-value"
+                style="display: none"
+              />
               <button class="dropdown-button">Quận huyện</button>
               <div class="dropdown-content">
                 <input
@@ -84,13 +100,13 @@
               1900 23 23 89
             </div>
           </div>
-          <div class="cmp-map__property-info__charging-type">
+          <!-- <div class="cmp-map__property-info__charging-type">
             <div>Loại cổng sạc</div>
             <ul></ul>
-          </div>
-          <div class="cmp-map__property-info__more">
+          </div> -->
+          <!-- <div class="cmp-map__property-info__more">
             <ul></ul>
-          </div>
+          </div> -->
           <button class="cmp-map__back-button">Đặt lịch hẹn</button>
         </div>
       </div>
@@ -103,18 +119,20 @@
           "#province-dropdown",
           provinceDistrictData
         );
-        const cityDropdown = new DropdownComponent("#district-dropdown", []);
+        const districtDropdown = new DropdownComponent(
+          "#district-dropdown",
+          []
+        );
         // Handle country selection to filter cities
         let filteredCities = [];
         countryDropdown.onChange((selectedCountry) => {
-          debugger
           provinceDistrictData.forEach((element) => {
             if (element.provinceId === selectedCountry) {
               filteredCities = element.districts;
             }
           });
-          cityDropdown.updateOptions(filteredCities);
-          cityDropdown.resetSelected();
+          districtDropdown.updateOptions(filteredCities);
+          districtDropdown.resetSelected();
         });
       </script>
       <script src="https://js.arcgis.com/4.26/"></script>

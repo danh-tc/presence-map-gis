@@ -27,9 +27,15 @@ require([
   const propHotline = propEl.querySelector(
     ".cmp-map__property-info__hottline__num"
   );
+  const nationalNumber = mapEl.querySelector(".cmp-map__info__national-number");
+  const provinceDropdownEl = mapEl.querySelector("#province-dropdown");
   const districtSelectedEl = mapEl.querySelector(
     "#district-dropdown .selected-value"
   );
+  const provinceSelectedEl = mapEl.querySelector(
+    "#province-dropdown .selected-value"
+  );
+
   // Create a map instance
   let map = new Map({
     basemap: "streets-navigation-vector",
@@ -50,6 +56,8 @@ require([
       obj: locator,
     };
   });
+  // Update total numbers
+  nationalNumber.innerHTML = `Có tổng cộng ${points.length} trạm sạc trên toàn quốc`;
 
   // Create a PictureMarkerSymbol using a custom image URL
   let pictureMarkerSymbol = new PictureMarkerSymbol({
@@ -58,21 +66,6 @@ require([
     height: "20px",
   });
 
-  // Create graphics for each point and add to the view
-  // points.forEach(function (pointCoords) {
-  //   let point = new Point({
-  //     longitude: pointCoords.longitude,
-  //     latitude: pointCoords.latitude,
-  //   });
-
-  //   let pointGraphic = new Graphic({
-  //     geometry: point,
-  //     symbol: pictureMarkerSymbol,
-  //     attributes: { name: pointCoords.name, obj: pointCoords.obj },
-  //   });
-
-  //   view.graphics.add(pointGraphic);
-  // });
   renderMarkers(points);
   function renderMarkers(points) {
     points.forEach(function (pointCoords) {
@@ -109,18 +102,19 @@ require([
           propEl.classList.toggle("cmp-map__property-info--hidden");
           mainPanelEl.classList.toggle("cmp-map__main-panel--hidden");
           const obj = graphic.attributes.obj;
-          debugger;
           if (obj) {
             propTitle.innerHTML = obj.name;
             propLocation.innerHTML = obj.address;
             propNavigate.href = obj.get_direction;
-            propStatus.innerHTML = obj.status;
-            propImg.src = obj.image_uri;
-            let typeOfCharging = "";
+            propStatus.innerHTML =
+              obj.status == 1 ? "Đang hoạt động" : "Tạm đóng cửa";
+            propHotline.innerHTML = obj.hotline;
+            // propImg.src = obj.image_uri;
+            const uniqueParam = new Date().getTime();
+            propImg.src = `https://picsum.photos/300/400?random=${uniqueParam}`;
           }
           // Optionally, update the center or zoom level
           let [longitude, latitude] = [obj.lng, obj.lat];
-          debugger;
           updateViewCenterAndZoomLevel([longitude, latitude], 18);
         }
       }
@@ -162,6 +156,50 @@ require([
   backButtonEl.addEventListener("click", () => {
     propEl.classList.toggle("cmp-map__property-info--hidden");
     mainPanelEl.classList.toggle("cmp-map__main-panel--hidden");
+    let selectedDistrict = districtSelectedEl.dataset.district;
+    let selectedProvince = provinceSelectedEl.dataset.province;
+    if (selectedDistrict) {
+      // show markers
+      // zoom to district
+      const points = locators.data
+        .filter((locator) => locator.district_id == selectedDistrict)
+        .map((locator) => {
+          return {
+            longitude: locator.lng,
+            latitude: locator.lat,
+            name: locator.name,
+            obj: locator,
+          };
+        });
+      removeAllMarkers();
+      renderMarkers(points);
+      let [longitude, latitude] = [points[0].obj.lng, points[0].obj.lat];
+      updateViewCenterAndZoomLevel([longitude, latitude], 13);
+    } else if (selectedProvince) {
+      const points = locators.data
+        .filter((locator) => locator.province_id == selectedProvince)
+        .map((locator) => {
+          return {
+            longitude: locator.lng,
+            latitude: locator.lat,
+            name: locator.name,
+            obj: locator,
+          };
+        });
+      removeAllMarkers();
+      renderMarkers(points);
+      const options = provinceDropdownEl.querySelectorAll(
+        ".dropdown-options a"
+      );
+      options.forEach((opt) => {
+        if (opt.dataset.province === selectedProvince) {
+          let [longitude, latitude] = opt.dataset.value.split(",").map(Number);
+          updateViewCenterAndZoomLevel([longitude, latitude], 10);
+        }
+      });
+    } else {
+      updateViewCenterAndZoomLevel([100.6146536, 15.7298565], 5);
+    }
   });
 
   districtSelectedEl.addEventListener("districtOnChange", function (event) {
@@ -180,7 +218,6 @@ require([
     removeAllMarkers();
     renderMarkers(points);
     // Zoom to the selected district
-    // Get lon lat
     let [longitude, latitude] = [points[0].obj.lng, points[0].obj.lat];
     updateViewCenterAndZoomLevel([longitude, latitude], 13);
   });
