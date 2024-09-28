@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div id="city-dropdown" class="dropdown">
+    <div id="district-dropdown" class="dropdown">
         <button class="dropdown-button">Select City</button>
         <div class="dropdown-content">
             <input type="text" class="dropdown-search" placeholder="Search City...">
@@ -33,7 +33,7 @@
 
         // Initialize dropdowns
         const countryDropdown = new DropdownComponent('#country-dropdown', countryData);
-        const cityDropdown = new DropdownComponent('#city-dropdown', []);
+        const cityDropdown = new DropdownComponent('#district-dropdown', []);
 
         // Handle country selection to filter cities
         countryDropdown.onChange((selectedCountry) => {

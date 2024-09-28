@@ -1,19 +1,39 @@
-body {
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+.cmp-map {
+  font-family: "Mulish";
   margin: 0;
   padding: 0;
   display: flex;
 }
-#viewDiv {
+.cmp-map #viewDiv {
   flex: 1;
   height: 100vh;
 }
-#sidePanel {
+.cmp-map #sidePanel {
   width: 25%;
   background-color: transparent;
   padding: 15px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
-select {
+.cmp-map select {
   width: 100%;
   padding: 8px;
 }
+.cmp-map__main-panel--hidden {
+  display: none;
+}
+.cmp-map__property-info--hidden {
+  display: none;
+}
+.cmp-map__property-info__img {
+  max-height: 500px;
+  width: 100%;
+}
+.cmp-map__property-info__navigate {
+  display: flex;
+  justify-content: space-between;
+}
+.cmp-map__property-info__hottline {
+  display: flex;
+  justify-content: space-between;
+}/*# sourceMappingURL=map.css.map */

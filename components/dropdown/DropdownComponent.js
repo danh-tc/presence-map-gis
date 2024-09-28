@@ -9,14 +9,13 @@ class DropdownComponent {
     }
 
     this.button = this.dropdownElement.querySelector(".dropdown-button");
+    this.inputElement = this.dropdownElement.querySelector(".selected-value");
     this.content = this.dropdownElement.querySelector(".dropdown-content");
     this.searchInput = this.dropdownElement.querySelector(".dropdown-search");
     this.optionsContainer =
       this.dropdownElement.querySelector(".dropdown-options");
-
     // Populate the dropdown with initial data
     this.populateDropdown(data);
-
     this.initialize();
   }
 
@@ -28,8 +27,18 @@ class DropdownComponent {
     this.options = data.map((item) => {
       const anchor = document.createElement("a");
       anchor.href = "#";
-      anchor.textContent = item.text;
-      anchor.setAttribute("data-value", item.value);
+      if (!item.optionLabel) return;
+      anchor.textContent = item.optionLabel;
+      // Custom values
+      if (item.longitude && item.latitude) {
+        anchor.setAttribute("data-value", `${item.longitude},${item.latitude}`);
+      }
+      if (item.provinceId) {
+        anchor.setAttribute("data-province", item.provinceId);
+      }
+      if (item.districtId) {
+        anchor.setAttribute("data-district", item.districtId);
+      }
       this.optionsContainer.appendChild(anchor);
       return anchor;
     });
@@ -79,9 +88,25 @@ class DropdownComponent {
 
   handleOptionClick(event) {
     if (event.target.tagName === "A") {
-      this.button.textContent = event.target.textContent;
+      const eventTarget = event.target.textContent;
+      this.button.textContent = eventTarget;
       this.content.style.display = "none";
-      const selectedValue = event.target.getAttribute("data-value");
+      this.inputElement.value = eventTarget;
+      // debugger;
+      // this.inputElement.setAttribute(
+      //   "data-value",
+      //   event.target.dataset.district ? event.target.dataset.district : ""
+      // );
+      const districtOnChange = new CustomEvent("districtOnChange", {
+        detail: {
+          selectedDistrict: event.target.dataset?.district,
+        },
+        bubbles: true,
+        cancelable: true,
+      });
+      this.inputElement.dispatchEvent(districtOnChange);
+
+      const selectedValue = event.target.getAttribute("data-province");
       if (this.onChangeCallback) {
         this.onChangeCallback(selectedValue);
       }
@@ -99,6 +124,11 @@ class DropdownComponent {
 
   onChange(callback) {
     this.onChangeCallback = callback;
+  }
+
+  resetSelected() {
+    this.inputElement.value = "";
+    this.button.textContent = "Quận huyện";
   }
 }
 
