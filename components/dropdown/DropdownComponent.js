@@ -24,7 +24,7 @@ class DropdownComponent {
     this.optionsContainer.innerHTML = "";
 
     // Populate with new options
-    this.options = data.map((item) => {
+    this.options = data?.map((item) => {
       const anchor = document.createElement("a");
       anchor.href = "#";
       if (!item.optionLabel) return;
@@ -103,10 +103,16 @@ class DropdownComponent {
           "data-province",
           event.target.dataset.province
         );
+        this.inputElement.setAttribute(
+          "data-provincelabel",
+          event.target.innerHTML
+        );
       }
+      
       const districtOnChange = new CustomEvent("districtOnChange", {
         detail: {
           selectedDistrict: event.target.dataset?.district,
+          selectedDistrictText: event.target.innerHTML
         },
         bubbles: true,
         cancelable: true,

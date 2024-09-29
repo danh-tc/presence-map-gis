@@ -5,6 +5,13 @@
   padding: 0;
   display: flex;
 }
+.cmp-map__header {
+  font-size: 28px;
+}
+.cmp-map svg {
+  height: 16px;
+  width: 16px;
+}
 .cmp-map #viewDiv {
   flex: 1;
   height: 100vh;
@@ -15,15 +22,43 @@
   padding: 15px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
+.cmp-map #reset-button {
+  background-color: unset;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 700;
+  border: 1px solid;
+  cursor: pointer;
+}
+.cmp-map #reset-button:hover {
+  background-color: #45a049;
+  color: #f9f9f9;
+  border-color: #45a049;
+}
 .cmp-map select {
   width: 100%;
   padding: 8px;
 }
+.cmp-map__main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .cmp-map__main-panel--hidden {
   display: none;
 }
+.cmp-map__property-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 16px;
+}
 .cmp-map__property-info--hidden {
   display: none;
+}
+.cmp-map__property-info__title {
+  font-size: 18px;
+  font-weight: 700;
 }
 .cmp-map__property-info__img {
   max-height: 500px;
@@ -33,7 +68,77 @@
   display: flex;
   justify-content: space-between;
 }
+.cmp-map__property-info__navigate div {
+  font-weight: 700;
+}
 .cmp-map__property-info__hottline {
   display: flex;
   justify-content: space-between;
+  font-weight: 700;
+}
+.cmp-map__property-info__status {
+  color: #45a049;
+  text-decoration: underline;
+}
+.cmp-map__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cmp-map__filter__label {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cmp-map__back-button {
+  align-self: flex-start;
+  cursor: pointer;
+  padding-left: unset;
+  font-size: 16px;
+  font-weight: 700;
+  background: transparent;
+  border: unset;
+  color: #292929;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+}
+.cmp-map__back-button:hover {
+  text-decoration: underline;
+}
+.cmp-map__submit-button {
+  background-color: transparent;
+  color: #292929;
+  text-decoration: unset;
+  padding: 16px 50px;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: 0 auto;
+  margin-top: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid #292929;
+  border-radius: 4px;
+}
+.cmp-map__submit-button:hover {
+  background-color: #45a049;
+  color: #f9f9f9;
+  border-color: #45a049;
+}
+.cmp-map__info__national-number, .cmp-map__info__provincial-number, .cmp-map__info__districting-number {
+  display: flex;
+  align-items: center;
+}
+.cmp-map .hidden {
+  display: none;
+}
+.cmp-map .special-number {
+  color: #292929;
+  margin-right: 8px;
+  font-size: 24px;
+  font-weight: 700;
 }/*# sourceMappingURL=map.css.map */

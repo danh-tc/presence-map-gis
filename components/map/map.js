@@ -8,6 +8,7 @@ require([
 ], function (Map, MapView, Graphic, PictureMarkerSymbol, Point) {
   // Cache selectors
   const mapEl = document.querySelector(".cmp-map");
+  const resetButtonEl = mapEl.querySelector("#reset-button");
   const backButtonEl = mapEl.querySelector(".cmp-map__back-button");
   const mainPanelEl = mapEl.querySelector(".cmp-map__main-panel");
   const propEl = mapEl.querySelector(".cmp-map__property-info");
@@ -15,7 +16,7 @@ require([
   const propImg = propEl.querySelector(".cmp-map__property-info__img");
   const propStatus = propEl.querySelector(".cmp-map__property-info__status");
   const propLocation = propEl.querySelector(
-    ".cmp-map__property-info__lcoation"
+    ".cmp-map__property-info__location"
   );
   const propNavigate = propEl.querySelector(
     ".cmp-map__property-info__navigate a"
@@ -28,6 +29,12 @@ require([
     ".cmp-map__property-info__hottline__num"
   );
   const nationalNumber = mapEl.querySelector(".cmp-map__info__national-number");
+  const provincialNumber = mapEl.querySelector(
+    ".cmp-map__info__provincial-number"
+  );
+  const districtinglNumber = mapEl.querySelector(
+    ".cmp-map__info__districting-number"
+  );
   const provinceDropdownEl = mapEl.querySelector("#province-dropdown");
   const districtSelectedEl = mapEl.querySelector(
     "#district-dropdown .selected-value"
@@ -57,7 +64,8 @@ require([
     };
   });
   // Update total numbers
-  nationalNumber.innerHTML = `Có tổng cộng ${points.length} trạm sạc trên toàn quốc`;
+  nationalNumber.innerHTML = `<span class="special-number">${points.length}</span>
+                              <div>trạm sạc trên toàn quốc</div>`;
 
   // Create a PictureMarkerSymbol using a custom image URL
   let pictureMarkerSymbol = new PictureMarkerSymbol({
@@ -146,7 +154,19 @@ require([
       renderMarkers(points);
       updateViewCenterAndZoomLevel([longitude, latitude], 10);
     }
-    // Show information on left side panel
+    // Update info
+    const numOfChargingStation = locators.data.filter(
+      (locator) => locator.province_id == event.target.dataset.province
+    ).length;
+    provincialNumber.innerHTML = `<span class="special-number">${numOfChargingStation}</span>
+                              <div>trạm sạc tại ${event.target.innerHTML}</div>`;
+    provincialNumber.classList.remove("hidden");
+    if (!nationalNumber.classList.contains("hidden")) {
+      nationalNumber.classList.add("hidden");
+    }
+    if (!districtinglNumber.classList.contains("hidden")) {
+      districtinglNumber.classList.add("hidden");
+    }
   }
 
   provinceDropdown.forEach((option) => {
@@ -220,6 +240,28 @@ require([
     // Zoom to the selected district
     let [longitude, latitude] = [points[0].obj.lng, points[0].obj.lat];
     updateViewCenterAndZoomLevel([longitude, latitude], 13);
+    // Update info
+    // Get current province
+    let selectedProvinceLabel = provinceSelectedEl.dataset.provincelabel;
+    let selectedDistrictLabel = event.detail.selectedDistrictText;
+    const numOfChargingStation = locators.data.filter(
+      (locator) => locator.district_id == event.target.dataset.district
+    ).length;
+    districtinglNumber.innerHTML = `<span class="special-number">${numOfChargingStation}</span>
+                              <div>trạm sạc tại ${selectedDistrictLabel}, ${selectedProvinceLabel}</div>`;
+    if (!nationalNumber.classList.contains("hidden")) {
+      nationalNumber.classList.add("hidden");
+    }
+    if (!provincialNumber.classList.contains("hidden")) {
+      provincialNumber.classList.add("hidden");
+    }
+    if (districtinglNumber.classList.contains("hidden")) {
+      districtinglNumber.classList.remove("hidden");
+    }
+  });
+
+  resetButtonEl.addEventListener("click", function () {
+    window.location.reload();
   });
 
   function updateViewCenterAndZoomLevel(lonlat, zoom) {
