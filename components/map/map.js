@@ -1,11 +1,28 @@
 import { locators } from "./locators.js";
+import { polygonData } from "./data.js";
 require([
   "esri/Map",
   "esri/views/MapView",
   "esri/Graphic",
   "esri/symbols/PictureMarkerSymbol",
   "esri/geometry/Point",
-], function (Map, MapView, Graphic, PictureMarkerSymbol, Point) {
+  "esri/layers/GraphicsLayer",
+  "esri/geometry/Polygon",
+  "esri/symbols/SimpleFillSymbol",
+  "esri/symbols/SimpleLineSymbol",
+  "esri/PopupTemplate",
+], function (
+  Map,
+  MapView,
+  Graphic,
+  PictureMarkerSymbol,
+  Point,
+  GraphicsLayer,
+  Polygon,
+  SimpleFillSymbol,
+  SimpleLineSymbol,
+  PopupTemplate
+) {
   // Cache selectors
   const mapEl = document.querySelector(".cmp-map");
   const resetButtonEl = mapEl.querySelector("#reset-button");
@@ -21,10 +38,6 @@ require([
   const propNavigate = propEl.querySelector(
     ".cmp-map__property-info__navigate a"
   );
-  const propCharging = propEl.querySelector(
-    ".cmp-map__property-info__charging-type ul"
-  );
-  const propMore = propEl.querySelector(".cmp-map__property-info__more ul");
   const propHotline = propEl.querySelector(
     ".cmp-map__property-info__hottline__num"
   );
@@ -54,6 +67,10 @@ require([
     center: [100.6146536, 15.7298565], // Default center
     zoom: 5,
   });
+  // Create a GraphicsLayer to hold the polygon
+  let graphicsLayer = new GraphicsLayer();
+  map.add(graphicsLayer);
+
   // Get all points from data to init map
   const points = locators.data.map((locator) => {
     return {
@@ -267,5 +284,68 @@ require([
   function updateViewCenterAndZoomLevel(lonlat, zoom) {
     view.center = lonlat;
     view.zoom = zoom;
+  }
+
+  // polygonData.forEach((polygon) => {
+  //   let { polygonCoords, color, backgroundColor, template } = polygon;
+  //   renderPolygon(polygonCoords, color, backgroundColor, template);
+  // });
+
+  // Add an event listener to show the popup on hover
+  view.on("pointer-move", function (event) {
+    view.hitTest(event).then(function (response) {
+      var graphic = response.results.filter(function (result) {
+        return result.graphic.layer === graphicsLayer;
+      })[0]?.graphic;
+
+      if (graphic) {
+        // Show the popup at the mouse location
+        view.popup.open({
+          location: event.mapPoint,
+          features: [graphic],
+        });
+      } else {
+        // Close the popup if no graphic is hovered
+        view.popup.close();
+      }
+    });
+  });
+
+  function renderPolygon(
+    polygonCoords,
+    outlineColor,
+    backgroundColor,
+    template
+  ) {
+    // Create the polygon geometry
+    let polygon = new Polygon({
+      rings: polygonCoords,
+      spatialReference: { wkid: 4326 }, // WGS84
+    });
+
+    // Define the symbol for the polygon (persistent background color)
+    let polygonSymbol = new SimpleFillSymbol({
+      color: backgroundColor, // Green fill with transparency
+      outline: {
+        color: outlineColor, // Green outline
+        width: 2,
+      },
+    });
+
+    // Define the popup template with image and other content
+    let popupTemplate = new PopupTemplate(template);
+
+    // Create a graphic for the polygon
+    let polygonGraphic = new Graphic({
+      geometry: polygon,
+      symbol: polygonSymbol,
+      attributes: {
+        rings: polygonCoords,
+      },
+      popupTemplate: popupTemplate,
+    });
+
+    // Add the polygon graphic to the graphics layer
+    graphicsLayer.add(polygonGraphic);
   }
 });

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draw Line - ArcGIS JS</title>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.27/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.27/"></script>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/Graphic",
+        "esri/geometry/Polyline",
+        "esri/symbols/SimpleLineSymbol",
+        "esri/layers/GraphicsLayer",
+      ], function (
+        Map,
+        MapView,
+        Graphic,
+        Polyline,
+        SimpleLineSymbol,
+        GraphicsLayer
+      ) {
+        // Create a map
+        const map = new Map({
+          basemap: "streets", // Set the basemap
+        });
+
+        // Create a view for the map
+        const view = new MapView({
+          container: "viewDiv", // Reference to the DOM element
+          map: map,
+          center: [-100, 40], // Center of the map (longitude, latitude)
+          zoom: 4,
+        });
+
+        // Define a polyline geometry
+        const polyline = new Polyline({
+          paths: [
+            [105.89717825735505, 10.289893158660425],
+            [105.90291785552122, 10.285745957868212],
+            [105.91177287146381, 10.270248340059727]
+          ],
+        });
+
+        // Create a symbol for the line (blue line)
+        const lineSymbol = new SimpleLineSymbol({
+          color: [0, 0, 255], // Blue color
+          width: 4,
+        });
+
+        // Create a graphic representing the line
+        const polylineGraphic = new Graphic({
+          geometry: polyline,
+          symbol: lineSymbol,
+        });
+
+        // Create a graphics layer to hold the line graphic
+        const graphicsLayer = new GraphicsLayer();
+        graphicsLayer.add(polylineGraphic); // Add the line graphic to the layer
+
+        // Add the graphics layer to the map
+        map.add(graphicsLayer);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
