@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ArcGIS Map with Side Panel</title>
+    <title>Hệ thống trạm sạc Vinfast tại Việt Name</title>
     <link
       rel="stylesheet"
       href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
@@ -12,68 +12,158 @@
     <link rel="stylesheet" href="../dropdown/style.css" />
   </head>
   <body>
-    
-    <div id="sidePanel">
-      <div class="header">Header</div>
-      <div class="info">Information</div>
-      <div class="filter">
-        <label for="locationDropdown">Select Location:</label>
-        <select id="locationDropdown">
-          <option value="-118.71511,34.09042">Location 1</option>
-          <option value="-118.71512,34.09100">Location 2</option>
-          <option value="-118.71450,34.08950">Location 3</option>
-          <option value="-118.71600,34.09000">Location 4</option>
-          <option value="-118.71580,34.09200">Location 5</option>
-        </select>
-        <div id="country-dropdown" class="dropdown">
-          <button class="dropdown-button">Select Country</button>
-          <div class="dropdown-content">
-            <input
-              type="text"
-              class="dropdown-search"
-              placeholder="Search Country..."
-            />
-            <div class="dropdown-options">
-              <!-- Options will be inserted dynamically here -->
+    <div class="cmp-map">
+      <div id="sidePanel">
+        <div class="cmp-map__main-panel">
+          <div class="cmp-map__header">
+            Hệ thống trạm sạc Vinfast tại Vietnam
+          </div>
+          <div class="cmp-map__info">
+            <div class="cmp-map__info__national-number">
+              Có bao nhiêu trạm trên toàn quốc?
+            </div>
+            <div class="cmp-map__info__provincial-number hidden">
+              Nếu có filter tỉnh: bao nhiêu trạm tại tỉnh nào?
+            </div>
+            <div class="cmp-map__info__districting-number hidden">
+              Nếu có filter tỉnh + huyện: bao nhiêu trạm tại tỉnh + huyện nào ?
+            </div>
+          </div>
+          <div class="cmp-map__filter">
+            <div class="cmp-map__filter__label">
+              <div>Chọn địa điểm:</div>
+              <button id="reset-button">Chọn lại</button>
+            </div>
+            <div id="province-dropdown" class="dropdown">
+              <input
+                type="text"
+                value=""
+                data-province=""
+                class="selected-value"
+                style="display: none"
+              />
+              <button class="dropdown-button">
+                <div>Tỉnh thành</div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                  <path
+                    d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+              <div class="dropdown-content">
+                <input
+                  type="text"
+                  class="dropdown-search"
+                  placeholder="Search Country..."
+                />
+                <div class="dropdown-options">
+                  <!-- Options will be inserted dynamically here -->
+                </div>
+              </div>
+            </div>
+
+            <div id="district-dropdown" class="dropdown">
+              <input
+                type="text"
+                value=""
+                data-district=""
+                class="selected-value"
+                style="display: none"
+              />
+              <button class="dropdown-button">
+                <div>Quận huyện</div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                  <path
+                    d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+              <div class="dropdown-content">
+                <input
+                  type="text"
+                  class="dropdown-search"
+                  placeholder="Search City..."
+                />
+                <div class="dropdown-options">
+                  <!-- Options will be inserted dynamically here -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        <div id="city-dropdown" class="dropdown">
-          <button class="dropdown-button">Select City</button>
-          <div class="dropdown-content">
-            <input
-              type="text"
-              class="dropdown-search"
-              placeholder="Search City..."
-            />
-            <div class="dropdown-options">
-              <!-- Options will be inserted dynamically here -->
+        <div class="cmp-map__property-info cmp-map__property-info--hidden">
+          <button class="cmp-map__back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+              <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+              <path
+                d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"
+                fill="#292929"
+              />
+            </svg>
+            <div>Quay lại</div>
+          </button>
+          <img
+            class="cmp-map__property-info__img"
+            src="https://lh3.googleusercontent.com/p/AF1QipMHUzDXtaCo6jxd1Y_MME2zSud0LxLNaV7sX050=s680-w680-h510"
+            alt="prop"
+          />
+          <div class="cmp-map__property-info__title">
+            Vinhomes Grand Park, hầm B2-Tòa S3
+          </div>
+          <div class="cmp-map__property-info__status">Đang hoạt động</div>
+          <div class="cmp-map__property-info__navigate">
+            <div>Địa chỉ:</div>
+            <a href="#" target="_blank">Chỉ Đường</a>
+          </div>
+          <div class="cmp-map__property-info__location">
+            Hầm B2-S3-PK1, Vinhomes Grand Park, đường Nguyễn Xiển, Thành phố Thủ
+            Đức, Thành phố Trung ương Hồ Chí Minh
+          </div>
+          <div class="cmp-map__property-info__hottline">
+            <div>Hotline:</div>
+            <div class="cmp-map__property-info__hottline__num">
+              1900 23 23 89
             </div>
           </div>
+          <a
+            href="https://vinfastauto.com/vn_vi"
+            target="_blank"
+            class="cmp-map__submit-button"
+            >Đặt lịch hẹn</a
+          >
         </div>
       </div>
+      <div id="viewDiv"></div>
+      <script type="module">
+        import DropdownComponent from "../dropdown/DropdownComponent.js";
+        import { provinceDistrictData } from "./data.js"; // Import data
+        // Initialize dropdowns
+        const countryDropdown = new DropdownComponent(
+          "#province-dropdown",
+          provinceDistrictData
+        );
+        const districtDropdown = new DropdownComponent(
+          "#district-dropdown",
+          []
+        );
+        // Handle country selection to filter cities
+        let filteredCities = [];
+        countryDropdown.onChange((selectedCountry) => {
+          provinceDistrictData.forEach((element) => {
+            if (element.provinceId === selectedCountry) {
+              filteredCities = element.districts;
+            }
+          });
+          districtDropdown.updateOptions(filteredCities);
+          districtDropdown.resetSelected();
+        });
+      </script>
+      <script src="https://js.arcgis.com/4.26/"></script>
+      <script src="./map.js" type="module"></script>
     </div>
-    <div id="viewDiv"></div>
-    <script type="module">
-      import DropdownComponent from "../dropdown/DropdownComponent.js";
-      import { countryData, cityData } from "../dropdown/data.js"; // Import data
-
-      // Initialize dropdowns
-      const countryDropdown = new DropdownComponent(
-        "#country-dropdown",
-        countryData
-      );
-      const cityDropdown = new DropdownComponent("#city-dropdown", []);
-
-      // Handle country selection to filter cities
-      countryDropdown.onChange((selectedCountry) => {
-        const filteredCities = cityData[selectedCountry] || [];
-        cityDropdown.updateOptions(filteredCities);
-      });
-    </script>
-    
-    <script src="https://js.arcgis.com/4.26/"></script>
-    <script src="./map.js" type="module"></script>
   </body>
 </html>
